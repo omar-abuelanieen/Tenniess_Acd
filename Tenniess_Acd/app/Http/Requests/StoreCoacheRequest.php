@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-
+use App\Rules\ValidCoachCapacityRule;
 class StoreCoacheRequest extends FormRequest
 {
     /**
@@ -27,6 +27,7 @@ class StoreCoacheRequest extends FormRequest
             'user_id'=>'required|exists:users,id',
             'role_id'=>'required|exists:roles,id',
             'expertise'=>'required|string|max:255',
+            'player_count'=>['required', 'integer', new ValidCoachCapacityRule()],
         ];
     }
 }

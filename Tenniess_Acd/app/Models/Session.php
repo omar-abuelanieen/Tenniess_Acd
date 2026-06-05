@@ -32,16 +32,17 @@ class Session extends Model
         'start_time' => 'datetime',
         'end_time' => 'datetime',
     ];
-    protected function start_time(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => \Carbon\Carbon::parse($value)->format('Y-m-d H:i:s'),
-        );
-    }
-    protected function end_time(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => \Carbon\Carbon::parse($value)->format('Y-m-d H:i:s'),
-        );
-    }
+   protected function startTime(): Attribute
+{
+    return Attribute::make(
+        get: fn ($value) => \Carbon\Carbon::parse($value)->format('Y-m-d H:i:s'),
+    );
+}
+
+protected function endTime(): Attribute
+{
+    return Attribute::make(
+        get: fn ($value) => \Carbon\Carbon::parse($value)->format('Y-m-d H:i:s'),
+    );
+}
 }

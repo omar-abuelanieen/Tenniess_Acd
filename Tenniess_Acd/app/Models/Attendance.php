@@ -8,7 +8,7 @@ class Attendance extends Model
 {
     protected $fillable =['training_session_id', 'player_id', 'status'];
 
-    public function Session()
+    public function session()
     {
         return $this->belongsTo(Session::class, 'training_session_id');
     }

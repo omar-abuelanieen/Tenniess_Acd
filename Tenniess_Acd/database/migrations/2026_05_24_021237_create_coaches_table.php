@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->foreignId('role_id')->constrained()->onDelete('cascade');
             $table->string('expertise');
+            $table->integer('player_count')->default(0);
             $table->timestamps();
         });
     }

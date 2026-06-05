@@ -33,7 +33,7 @@ class PlayerController extends Controller
     public function store(StorePlayerRequest $request)
     {
         $players =Player::create($request->validated());
-        return response()->json(['message'=>'player created successfully','player'=>$players],201);
+        return createdResponse('Player created successfully', $players);
     }
 
     /**
@@ -58,7 +58,7 @@ class PlayerController extends Controller
     public function update(UpdatePlayerRequest $request, Player $players)
     {
         $players->update($request->validated());
-        return response()->json(['message'=>'player updated successfully','player'=>$players]);
+        return updatedResponse('Player updated successfully', $players);
     }
 
     /**
@@ -67,7 +67,7 @@ class PlayerController extends Controller
     public function destroy(Player $players)
     {
         $players->destroy();
-        return response()->json(['message'=>'player deleted successfully']);
+        return deletedResponse('Player deleted successfully', $players);
     }
 
     public function sessions(Player $players)
@@ -87,12 +87,12 @@ class PlayerController extends Controller
 
     public function rstore(Player $players){
         $players->restore();
-        return response()->json(['message'=>'player restored successfully','player'=>$players],200);
+        return restoredResponse('Player restored successfully', $players);
     }
 
 
     public function forceDelete(Player $players){
         $players->forceDelete();
-        return response()->json(['message'=>'player permanently deleted'],200);
+        return deletedResponse('Player permanently deleted', $players);
     }
 }

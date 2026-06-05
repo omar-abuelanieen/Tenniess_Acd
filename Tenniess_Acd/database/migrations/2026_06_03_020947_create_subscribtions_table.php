@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('players', function (Blueprint $table) {
+        Schema::create('subscribtions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->softDeletes();
-            $table->string('name');
-            $table->integer('age');
-            $table->foreignId('role_id')->constrained()->onDelete('cascade');
-            $table->string('level');
+            $table->foreignId('player_id')->constrained()->onDelete('cascade');
+            $table->foreignId('training_session_id')->constrained()->onDelete('cascade');
+            $table->string('status')->default('active');
+            $table->string('payment_status')->default('pending');
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('players');
+        Schema::dropIfExists('subscribtions');
     }
 };

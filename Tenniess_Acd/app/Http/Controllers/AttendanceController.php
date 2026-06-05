@@ -3,82 +3,90 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
-use Illuminate\Http\Request;
+use App\Services\AttendanceService;
 use App\Http\Requests\StoreAttendanceRequest;
 use App\Http\Requests\UpdateAttendanceRequest;
-use App\Models\Session;
-use App\Models\Player;
 
 class AttendanceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        $attendances = Attendance::all();
-        return response()->json($attendances);
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+   public function index()
+{
+    return successResponse($this->attendanceService->getAll(), 'Attendances retrieved successfully');
+}
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreAttendanceRequest $request)
-    {
-        $attendance = Attendance::create($request->validated());
-        return response()->json(['message' => 'Attendance created successfully', 'attendance' => $attendance], 201);
-    }
+public function store(StoreAttendanceRequest $request)
+{
+    $attendance = $this->attendanceService->create($request->validated());
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Attendance $attendance)
-    {
-        return response()->json($attendance);
-    }
+    return createdResponse($attendance, 'Attendance created successfully');
+}
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Attendance $attendance)
-    {
-        //
-    }
+public function show(Attendance $attendance)
+{
+    return successResponse($attendance, 'Attendance retrieved successfully');
+}
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateAttendanceRequest $request, Attendance $attendance)
-    {
-        $attendance->update($request->validated());
-        return response()->json(['message' => 'Attendance updated successfully', 'attendance' => $attendance]);
-    }
+public function update(UpdateAttendanceRequest $request, Attendance $attendance)
+{
+    $attendance = $this->attendanceService->update($attendance, $request->validated());
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Attendance $attendance)
-    {
-        $attendance->delete();
-        return response()->json(['message' => 'Attendance deleted successfully']);
-    }
-    public function getAttendanceByPlayerId($playerId)
-    {
-        $attendances = Attendance::where('player_id', $playerId)->get();
-        return response()->json($attendances);
-    }
-    public function getAttendanceBySessionId($sessionId)
-    {
-        $attendances = Attendance::where('session_id', $sessionId)->get();
-        return response()->json($attendances);
-    }
-    
+    return updatedResponse($attendance, 'Attendance updated successfully');
+}
+
+public function destroy(Attendance $attendance)
+{
+    $this->attendanceService->delete($attendance);
+
+    return deletedResponse('Attendance deleted successfully');
+}
+
+public function getAttendanceByPlayerId($playerId)
+{
+    return successResponse(
+        $this->attendanceService->getAttendanceByPlayerId($playerId),
+        'Player attendances retrieved successfully'
+    );
+}
+
+public function getAttendanceBySessionId($sessionId)
+{
+    return successResponse(
+        $this->attendanceService->getAttendanceBySessionId($sessionId),
+        'Session attendances retrieved successfully'
+    );
+}
+
+
+
+public function trashed()
+{
+    return successResponse(
+        $this->attendanceService->getTrashed(),
+        'Trashed attendances retrieved successfully'
+    );
+}
+
+public function restore($id)
+{
+    $attendance = Attendance::withTrashed()->findOrFail($id);
+
+    $this->attendanceService->restore($attendance);
+
+    return successResponse(
+        $attendance,
+        'Attendance restored successfully'
+    );
+}
+
+public function forceDelete($id)
+{
+    $attendance = Attendance::withTrashed()->findOrFail($id);
+
+    $this->attendanceService->forceDelete($attendance);
+
+    return deletedResponse(
+        'Attendance permanently deleted successfully'
+    );
+}
 }

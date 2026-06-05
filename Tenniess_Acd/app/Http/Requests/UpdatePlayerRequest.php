@@ -27,6 +27,7 @@ class UpdatePlayerRequest extends FormRequest
             'user_id'=>'sometimes|required|exists:users,id',
             'role_id'=>'sometimes|required|exists:roles,id',
             'level'=>'sometimes|required|string|max:255',
+            'age'=>['sometimes', 'required', 'integer', new ValidPlayerAge()],
         ];
     }
 }

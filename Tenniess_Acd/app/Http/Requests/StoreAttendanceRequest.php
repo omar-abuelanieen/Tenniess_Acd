@@ -24,10 +24,10 @@ class StoreAttendanceRequest extends FormRequest
     {
         return [
             'player_id'=>'required|exists:players,id',
-            'coache_id'=>'required|exists:coaches,id',
+            'training_session_id'=>'required|exists:training_sessions,id',
             'date'=>'required|date',
             'status'=>'required|string|max:255',
-            
+
         ];
     }
 }

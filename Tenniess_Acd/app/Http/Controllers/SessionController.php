@@ -29,22 +29,22 @@ class SessionController extends Controller
      */
     public function store(Request $request)
     {
-        $session = Session::create($request->all());
-        return response()->json(['message' => 'Session created successfully', 'session' => $session], 201);
+        $sessions = Session::create($request->all());
+        return createdResponse('Session created successfully', $sessions);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Session $session)
+    public function show(Session $sessions)
     {
-        return response()->json($session);
+        return response()->json($sessions);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Session $session)
+    public function edit(Session $sessions)
     {
         //
     }
@@ -52,33 +52,33 @@ class SessionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Session $session)
+    public function update(Request $request, Session $sessions)
     {
-        $session->update($request->all());
-        return response()->json(['message' => 'Session updated successfully', 'session' => $session]);
+        $sessions->update($request->all());
+        return updatedResponse('Session updated successfully', $sessions);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Session $session)
+    public function destroy(Session $sessions)
     {
-        $session->destory();
-        return response()->json(['message' => 'Session deleted successfully']);
+        $sessions->destory();
+        return deletedResponse('Session deleted successfully', $sessions);
     }
-    public function players(Session $session)
+    public function players(Session $sessions)
     {
-        $players = $session->players;
+        $players = $sessions->players;
         return response()->json($players);
     }
-    public function coaches(Session $session)
+    public function coaches(Session $sessions)
     {
-        $coaches = $session->coaches;
+        $coaches = $sessions->coaches;
         return response()->json($coaches);
     }
-    public function attendances(Session $session)
+    public function attendances(Session $sessions)
     {
-        $attendances = $session->attendances;
+        $attendances = $sessions->attendances;
         return response()->json($attendances);
     }
     public function getSessionByPlayerId($playerId)

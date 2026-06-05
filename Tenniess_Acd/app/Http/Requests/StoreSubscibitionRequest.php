@@ -4,8 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Rules\ValidPlayerAge;
-class StorePlayerRequest extends FormRequest
+
+class StoreSubscibitionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,11 +23,10 @@ class StorePlayerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'required|string|max:255',
-            'user_id'=>'required|exists:users,id',
-            'role_id'=>'required|exists:roles,id',
-            'level'=>'required|string|max:255',
-            'age'=>['required', 'integer', new ValidPlayerAge()],
+            'player_id' => 'required|exists:players,id',
+            'training_session_id' => 'required|exists:training_sessions,id',
+            'status' => 'required|string|max:255',
+            'payment_status' => 'required|string|max:255',
         ];
     }
 }
