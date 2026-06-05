@@ -173,6 +173,5 @@ Error Response
 }
 ```
 
-## Author
-omar abuelanieen
+##project
 Developed as a Laravel API project for Tennis Academy Management.
