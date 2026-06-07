@@ -53,11 +53,10 @@ Route::apiResource('attendances',AttendanceController::class);
 
 
 Route::get('/subscriptions/trashed', [SubscribtionController::class, 'trashed']);
-
+Route::patch('/subscriptions/{id}/restore', [SubscribtionController::class, 'restore']);
+Route::delete('/subscriptions/{id}/force-delete', [SubscribtionController::class, 'forceDelete']);
 Route::apiResource('subscriptions',SubscribtionController::class);
 Route::get('/subscriptions/valid', [SubscribtionController::class, 'validSubscriptions']);
 Route::patch('/subscriptions/{subscription}/activate', [SubscribtionController::class, 'activate']);
 Route::patch('/subscriptions/{subscription}/cancel', [SubscribtionController::class, 'cancel']);
 Route::patch('/subscriptions/{subscription}/freeze', [SubscribtionController::class, 'freeze']);
-Route::patch('/subscriptions/{id}/restore', [SubscribtionController::class, 'restore']);
-Route::delete('/subscriptions/{id}/force-delete', [SubscribtionController::class, 'forceDelete']);

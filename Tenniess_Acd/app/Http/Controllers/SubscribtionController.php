@@ -13,81 +13,118 @@ class SubscribtionController extends Controller
         private SubscriptionService $subscriptionService
     ) {}
 
- public function index()
-{
-    return successResponse($this->subscriptionService->getAll(), 'Subscriptions retrieved successfully');
-}
+    public function index()
+    {
+        return successResponse(
+            $this->subscriptionService->getAll(),
+            'Subscriptions retrieved successfully'
+        );
+    }
 
-public function store(StoreSubscibitionRequest $request)
-{
-    $subscribtion = $this->subscriptionService->create($request->validated());
+    public function store(StoreSubscibitionRequest $request)
+    {
+        $subscription = $this->subscriptionService->create($request->validated());
 
-    return createdResponse($subscribtion, 'Subscription created successfully');
-}
+        return createdResponse(
+            $subscription,
+            'Subscription created successfully'
+        );
+    }
 
-public function show(Subscribtion $subscribtion)
-{
-    return successResponse($subscribtion, 'Subscription retrieved successfully');
-}
+    public function show($id)
+    {
+        $subscription = $this->subscriptionService->getSubscriptionById($id);
 
-public function update(UpdateSubscibitionRequest $request, Subscribtion $subscribtion)
-{
-    $subscribtion = $this->subscriptionService->update($subscribtion, $request->validated());
+        return successResponse(
+            $subscription,
+            'Subscription retrieved successfully'
+        );
+    }
 
-    return updatedResponse($subscribtion, 'Subscription updated successfully');
-}
+    public function update(UpdateSubscibitionRequest $request, $id)
+    {
+        $subscription = $this->subscriptionService->update(
+            Subscription::findOrFail($id),
+            $request->validated()
+        );
 
-public function validSubscriptions()
-{
-    return successResponse($this->subscriptionService->getValidSubscriptions(), 'Valid subscriptions retrieved successfully');
-}
+        return updatedResponse(
+            $subscription,
+            'Subscription updated successfully'
+        );
+    }
 
-public function activate(Subscribtion $subscribtion)
-{
-    $subscribtion = $this->subscriptionService->activate($subscribtion);
+    public function validSubscriptions()
+    {
+        return successResponse(
+            $this->subscriptionService->getValidSubscriptions(),
+            'Valid subscriptions retrieved successfully'
+        );
+    }
 
-    return updatedResponse($subscribtion, 'Subscription activated successfully');
-}
+    public function activate($id)
+    {
+        $subscription = $this->subscriptionService->activate($id);
 
-public function cancel(Subscribtion $subscribtion)
-{
-    $subscribtion = $this->subscriptionService->cancel($subscribtion);
+        return updatedResponse(
+            $subscription,
+            'Subscription activated successfully'
+        );
+    }
 
-    return updatedResponse($subscribtion, 'Subscription cancelled successfully');
-}
+    public function cancel($id)
+    {
+        $subscription = $this->subscriptionService->cancel($id);
 
-public function freeze(Subscribtion $subscribtion)
-{
-    $subscribtion = $this->subscriptionService->freezeSubscription($subscribtion);
+        return updatedResponse(
+            $subscription,
+            'Subscription cancelled successfully'
+        );
+    }
 
-    return updatedResponse($subscribtion, 'Subscription frozen successfully');
-}
+    public function freeze($id)
+    {
+        $subscription = $this->subscriptionService->freezeSubscription($id);
 
-public function destroy(Subscribtion $subscribtion)
-{
-    $this->subscriptionService->delete($subscribtion);
+        return updatedResponse(
+            $subscription,
+            'Subscription frozen successfully'
+        );
+    }
 
-    return deletedResponse('Subscription deleted successfully');
-}
+    public function destroy($id)
+    {
+        $subscription = Subscription::findOrFail($id);
 
-public function trashed()
-{
-    return successResponse($this->subscriptionService->getTrashed(), 'Trashed subscriptions retrieved successfully');
-}
+        $this->subscriptionService->delete($subscription);
 
-public function restore($id)
-{
-    $subscribtion = Subscribtion::withTrashed()->findOrFail($id);
-    $subscribtion = $this->subscriptionService->restore($subscribtion);
+        return deletedResponse('Subscription deleted successfully');
+    }
 
-    return successResponse($subscribtion, 'Subscription restored successfully');
-}
+    public function trashed()
+    {
+        return successResponse(
+            $this->subscriptionService->getTrashed(),
+            'Trashed subscriptions retrieved successfully'
+        );
+    }
 
-public function forceDelete($id)
-{
-    $subscribtion = Subscribtion::withTrashed()->findOrFail($id);
-    $this->subscriptionService->forceDelete($subscribtion);
+    public function restore($id)
+    {
+        $subscription = $this->subscriptionService->restore($id);
 
-    return deletedResponse('Subscription permanently deleted successfully');
-}
+        return successResponse(
+            $subscription,
+            'Subscription restored successfully'
+        );
+    }
+
+    public function forceDelete($id)
+    {
+        $subscription = Subscription::withTrashed()->findOrFail($id);
+
+        $this->subscriptionService->forceDelete($subscription);
+
+        return deletedResponse('Subscription permanently deleted successfully');
+    }
 }

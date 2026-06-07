@@ -11,7 +11,7 @@ class SubscriptionService
         return Subscription::with(['player', 'session'])->get();
     }
 
-    public function create(array $data): Subscription   
+    public function create(array $data): Subscription
     {
         return Subscription::create($data);
     }
@@ -20,7 +20,7 @@ class SubscriptionService
     {
         $subscription->update($data);
 
-        return $subscription->fresh();
+        return $subscription;
     }
 
     public function getValidSubscriptions()
@@ -28,31 +28,37 @@ class SubscriptionService
         return Subscription::valid()->get();
     }
 
-    public function activate(Subscription $subscription): Subscription
+    public function activate($id): Subscription
     {
+        $subscription = Subscription::findOrFail($id);
+
         $subscription->update([
-            'status' => 'active',
+            'status' => 'active'
         ]);
 
-        return $subscription->fresh();
+        return $subscription;
     }
 
-    public function cancel(Subscription $subscription): Subscription
+    public function cancel($id): Subscription
     {
+        $subscription = Subscription::findOrFail($id);
+
         $subscription->update([
-            'status' => 'cancelled',
+            'status' => 'cancelled'
         ]);
 
-        return $subscription->fresh();
+        return $subscription;
     }
 
-    public function freezeSubscription(Subscription $subscription): Subscription
+    public function freezeSubscription($id): Subscription
     {
+        $subscription = Subscription::findOrFail($id);
+
         $subscription->update([
-            'status' => 'frozen',
+            'status' => 'frozen'
         ]);
 
-        return $subscription->fresh();
+        return $subscription;
     }
 
     public function delete(Subscription $subscription): void
@@ -70,8 +76,10 @@ class SubscriptionService
         return Subscription::onlyTrashed()->get();
     }
 
-    public function restore(Subscription $subscription): Subscription
+    public function restore($id): Subscription
     {
+        $subscription = Subscription::withTrashed()->findOrFail($id);
+
         $subscription->restore();
 
         return $subscription;

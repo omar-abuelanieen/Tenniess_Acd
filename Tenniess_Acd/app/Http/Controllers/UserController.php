@@ -30,12 +30,15 @@ class UserController extends Controller
         return successResponse($user, 'User edit data retrieved successfully');
     }
 
-    public function update(UpdateUserRequest $request, User $user)
-    {
-        $user->update($request->validated());
+  public function update(UpdateSubscibitionRequest $request, Subscription $subscription)
+{
+    $subscription = $this->subscriptionService->update(
+        $subscription,
+        $request->validated()
+    );
 
-        return updatedResponse($user->fresh(), 'User updated successfully');
-    }
+    dd($subscription);
+}
 
     public function destroy(User $user)
     {
