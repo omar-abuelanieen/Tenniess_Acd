@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 class Player extends Model
 {
     use SoftDeletes;
-    protected $fillable =['name', 'user_id', 'role_id', 'level',];
+    protected $fillable =['name', 'user_id', 'role_id', 'level', 'age'];
 
 
 

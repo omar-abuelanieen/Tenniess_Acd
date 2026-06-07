@@ -25,7 +25,7 @@ class StoreSubscibitionRequest extends FormRequest
         return [
             'player_id' => 'required|exists:players,id',
             'training_session_id' => 'required|exists:training_sessions,id',
-            'status' => 'required|string|max:255',
+            'status' => 'required|in:active,cancelled,frozen,pending',
             'payment_status' => 'required|string|max:255',
         ];
     }

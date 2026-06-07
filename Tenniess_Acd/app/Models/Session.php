@@ -21,7 +21,7 @@ class Session extends Model
 
     public function coach()
     {
-        return $this->belongsTo(Coache::class);
+        return $this->belongsTo(Coache::class, 'coach_id');
     }
 
     public function attendances()

@@ -34,7 +34,7 @@ class CoacheController extends Controller
     public function store(StoreCoacheRequest $request)
     {
         $coaches =Coache::create($request->validated());
-        return createdResponse('Coache created successfully', $coaches);
+        return createdResponse($coaches, 'Coache created successfully');
     }
 
     /**
@@ -59,7 +59,7 @@ class CoacheController extends Controller
     public function update(UpdateCoacheRequest $request, Coache $coaches)
     {
         $coaches->update($request->validated());
-        return updatedResponse('Coache updated successfully', $coaches);
+        return updatedResponse($coaches, 'Coache updated successfully');
     }
 
     /**
@@ -68,7 +68,7 @@ class CoacheController extends Controller
     public function destroy(Coache $coaches)
     {
         $coaches->destroy();
-        return deletedResponse('Coache deleted successfully', $coaches);
+        return deletedResponse($coaches, 'Coache deleted successfully');
     }
 
     public function sessions(Coache $coaches)
@@ -94,11 +94,11 @@ class CoacheController extends Controller
     }
     public function rstore(Coache $coaches){
         $coaches->restore();
-        return restoredResponse('Coache restored successfully', $coaches);
+        return restoredResponse($coaches,'Coache restored successfully', );
     }
 
     public function forceDelete(Coache $coaches){
         $coaches->forceDelete();
-        return deletedResponse('Coache permanently deleted', $coaches);
+        return deletedResponse($coaches, 'Coache permanently deleted');
     }
 }

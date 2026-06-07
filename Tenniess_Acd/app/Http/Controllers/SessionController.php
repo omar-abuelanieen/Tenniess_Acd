@@ -30,7 +30,7 @@ class SessionController extends Controller
     public function store(Request $request)
     {
         $sessions = Session::create($request->all());
-        return createdResponse('Session created successfully', $sessions);
+        return createdResponse($sessions, 'Session created successfully');
     }
 
     /**
@@ -55,16 +55,15 @@ class SessionController extends Controller
     public function update(Request $request, Session $sessions)
     {
         $sessions->update($request->all());
-        return updatedResponse('Session updated successfully', $sessions);
+        return updatedResponse($sessions, 'Session updated successfully');
     }
 
     /**
-     * Remove the specified resource from storage.
      */
     public function destroy(Session $sessions)
     {
-        $sessions->destory();
-        return deletedResponse('Session deleted successfully', $sessions);
+        $sessions->delete();
+        return deletedResponse($sessions, 'Session deleted successfully');
     }
     public function players(Session $sessions)
     {

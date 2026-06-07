@@ -33,7 +33,7 @@ class RoleController extends Controller
     public function store(StoreRoleRequest $request)
     {
         $role = Role::create($request->all());
-        return createdResponse('Role created successfully', $role);
+        return createdResponse($role, 'Role created successfully');
     }
 
     /**
@@ -58,7 +58,7 @@ class RoleController extends Controller
     public function update(UpdateRoleRequest $request, Role $role)
     {
         $role->update($request->all());
-        return updatedResponse('Role updated successfully', $role);
+        return updatedResponse($role,'Role updated successfully' );
     }
 
     /**
@@ -66,7 +66,7 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
-        $role->destory();
-        return deletedResponse('Role deleted successfully', $role);
+        $role->delete();
+        return deletedResponse($role,'Role deleted successfully' );
     }
 }

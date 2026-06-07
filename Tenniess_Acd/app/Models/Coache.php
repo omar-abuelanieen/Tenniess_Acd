@@ -27,7 +27,7 @@ class Coache extends Model
 
     public function sessions()
     {
-        return $this->hasMany(Session::class);
+        return $this->hasMany(Session::class, 'coach_id');
     }
     protected $casts = [
         'name' => 'string',

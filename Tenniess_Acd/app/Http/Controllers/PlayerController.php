@@ -33,7 +33,7 @@ class PlayerController extends Controller
     public function store(StorePlayerRequest $request)
     {
         $players =Player::create($request->validated());
-        return createdResponse('Player created successfully', $players);
+        return createdResponse($players, 'Player created successfully');
     }
 
     /**
@@ -58,28 +58,19 @@ class PlayerController extends Controller
     public function update(UpdatePlayerRequest $request, Player $players)
     {
         $players->update($request->validated());
-        return updatedResponse('Player updated successfully', $players);
+        return updatedResponse($players, 'Player updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Player $players)
-    {
-        $players->destroy();
-        return deletedResponse('Player deleted successfully', $players);
-    }
+  public function destroy(Player $player)
+{
+    $player->delete();
 
-    public function sessions(Player $players)
-    {
-        $sessions = $players->sessions()->with('coach')->get();
-        return response()->json(['message'=>'player sessions retrieved successfully','sessions'=>$sessions]);
-    }
-    public function attendances(Player $players)
-    {
-        $attendances = $players->attendances()->with('session.coach')->get();
-        return response()->json(['message'=>'player attendances retrieved successfully','attendances'=>$attendances]);
-    }
+    return deletedResponse('Player deleted successfully');
+}
+   
     public function trashed(){
         $players = Player::onlyTrashed()->get();
         return response()->json($players);
@@ -87,12 +78,12 @@ class PlayerController extends Controller
 
     public function rstore(Player $players){
         $players->restore();
-        return restoredResponse('Player restored successfully', $players);
+        return restoredResponse($players, 'Player restored successfully');
     }
 
 
     public function forceDelete(Player $players){
         $players->forceDelete();
-        return deletedResponse('Player permanently deleted', $players);
+        return deletedResponse($players, 'Player permanently deleted');
     }
 }

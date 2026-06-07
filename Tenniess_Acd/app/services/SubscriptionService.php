@@ -11,7 +11,7 @@ class SubscriptionService
         return Subscription::with(['player', 'session'])->get();
     }
 
-    public function create(array $data): Subscription
+    public function create(array $data): Subscription   
     {
         return Subscription::create($data);
     }

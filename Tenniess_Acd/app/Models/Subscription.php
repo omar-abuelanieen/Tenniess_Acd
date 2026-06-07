@@ -6,8 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
-class Subscribtion extends Model
+class Subscription extends Model
 {
+
+
+
+
     use SoftDeletes;
 
   protected $fillable = ['player_id','training_session_id','status','payment_status'];
