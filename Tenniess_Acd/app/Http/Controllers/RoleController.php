@@ -57,7 +57,7 @@ class RoleController extends Controller
      */
     public function update(UpdateRoleRequest $request, Role $role)
     {
-        $role->update($request->all());
+        $role->update($request->validated());
         return updatedResponse($role,'Role updated successfully' );
     }
 
@@ -78,9 +78,9 @@ class RoleController extends Controller
         'Trashed roles retrieved successfully'
     );
 }
-public function restore($id)
+public function restore(Role $role)
 {
-    $role = Role::withTrashed()->findOrFail($id);
+    $role = Role::withTrashed()->findOrFail($role->id);
 
     $role->restore();
 
@@ -89,9 +89,9 @@ public function restore($id)
         'Role restored successfully'
     );
 }
-public function forceDelete($id)
+public function forceDelete(Role $role)
 {
-    $role = Role::withTrashed()->findOrFail($id);
+    $role = Role::withTrashed()->findOrFail($role->id);
 
     $role->forceDelete();
 

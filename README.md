@@ -24,6 +24,7 @@ A Laravel RESTful API for managing a Tennis Academy. The system handles users, r
 * Laravel 12
 * MySQL
 * Laravel Sanctum
+* Laravel Jwt
 * Postman
 
 ## Installation

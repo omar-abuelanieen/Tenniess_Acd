@@ -31,7 +31,7 @@ class SessionController extends Controller
      */
     public function store(StoreSessionRequest $request)
     {
-        $sessions = Session::create($request->all());
+        $sessions = Session::create($request->validated());
         return createdResponse($sessions, 'Session created successfully');
     }
 
