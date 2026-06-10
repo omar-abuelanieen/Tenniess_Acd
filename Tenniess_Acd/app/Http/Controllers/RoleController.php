@@ -67,6 +67,34 @@ class RoleController extends Controller
     public function destroy(Role $role)
     {
         $role->delete();
-        return deletedResponse($role,'Role deleted successfully' );
+        return deletedResponse('Role deleted successfully',$role );
     }
+    public function trashed()
+{
+    $roles = Role::onlyTrashed()->get();
+
+    return successResponse(
+        $roles,
+        'Trashed roles retrieved successfully'
+    );
+}
+public function restore($id)
+{
+    $role = Role::withTrashed()->findOrFail($id);
+
+    $role->restore();
+
+    return successResponse(
+        $role,
+        'Role restored successfully'
+    );
+}
+public function forceDelete($id)
+{
+    $role = Role::withTrashed()->findOrFail($id);
+
+    $role->forceDelete();
+
+    return deletedResponse('Role permanently deleted successfully');
+}
 }

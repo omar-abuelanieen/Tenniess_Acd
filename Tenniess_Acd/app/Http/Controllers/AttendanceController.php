@@ -31,7 +31,7 @@ class AttendanceController extends Controller
     {
         $attendance->update($request->validated());
 
-        return updatedResponse($attendance, 'Attendance updated successfully');
+        return updatedResponse($attendance->toArray(), 'Attendance updated successfully');
     }
 
     public function destroy(Attendance $attendance)

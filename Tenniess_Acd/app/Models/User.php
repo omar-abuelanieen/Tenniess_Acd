@@ -10,18 +10,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
-    /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
-    use SoftDeletes;
     protected $fillable = [
         'name',
         'email',
@@ -37,45 +36,59 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-protected function name(): Attribute
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
+    protected function name(): Attribute
     {
         return Attribute::make(
             get: fn ($value) => ucfirst($value),
         );
     }
+
     protected function email(): Attribute
     {
         return Attribute::make(
             get: fn ($value) => strtolower($value),
         );
     }
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+
     public function roles()
     {
         return $this->hasOne(Role::class);
     }
-
-
 
     public function player()
     {
         return $this->hasMany(Player::class);
     }
 
-
     public function coache()
     {
         return $this->hasMany(Coache::class);
     }
+     public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
 }
+

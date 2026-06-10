@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Session;
 use Illuminate\Http\Request;
+use App\Http\Requests\UpdateSessionRequest;
+use App\Http\Requests\StoreSessionRequest;
 
 class SessionController extends Controller
 {
@@ -27,7 +29,7 @@ class SessionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreSessionRequest $request)
     {
         $sessions = Session::create($request->all());
         return createdResponse($sessions, 'Session created successfully');
@@ -52,18 +54,24 @@ class SessionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Session $sessions)
-    {
-        $sessions->update($request->all());
-        return updatedResponse($sessions, 'Session updated successfully');
-    }
+   public function update(UpdateSessionRequest $request, Session $session)
+{
+    $session->update($request->validated());
+
+   $session->refresh();
+
+return updatedResponse(
+    $session->toArray(),
+    'Session updated successfully'
+);
+}
 
     /**
      */
     public function destroy(Session $sessions)
     {
         $sessions->delete();
-        return deletedResponse($sessions, 'Session deleted successfully');
+        return deletedResponse( 'Session deleted successfully');
     }
     public function players(Session $sessions)
     {

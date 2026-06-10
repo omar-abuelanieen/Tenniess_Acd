@@ -55,10 +55,10 @@ class PlayerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePlayerRequest $request, Player $players)
-    {
-        $players->update($request->validated());
-        return updatedResponse($players, 'Player updated successfully');
+public function update(UpdatePlayerRequest $request, Player $player)    {
+        $player->update($request->validated());
+        $player->refresh();
+        return updatedResponse($player->toArray(), 'Player updated successfully');
     }
 
     /**

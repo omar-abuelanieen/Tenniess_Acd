@@ -26,7 +26,7 @@ class UpdateAttendanceRequest extends FormRequest
             'player_id'=>'sometimes|required|exists:players,id',
             'coache_id'=>'sometimes|required|exists:coaches,id',
             'date'=>'sometimes|required|date',
-            'status'=>'sometimes|required|string|max:255',
+            'status' => 'sometimes|required|in:present,absent,late,excused'
         ];
     }
 }

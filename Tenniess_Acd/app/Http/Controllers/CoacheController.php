@@ -56,10 +56,10 @@ class CoacheController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCoacheRequest $request, Coache $coaches)
+    public function update(UpdateCoacheRequest $request, Coache $coache)
     {
-        $coaches->update($request->validated());
-        return updatedResponse($coaches, 'Coache updated successfully');
+        $coache->update($request->validated());
+        return updatedResponse($coache, 'Coache updated successfully');
     }
 
     /**
@@ -67,8 +67,8 @@ class CoacheController extends Controller
      */
     public function destroy(Coache $coaches)
     {
-        $coaches->destroy();
-        return deletedResponse($coaches, 'Coache deleted successfully');
+        $coaches->delete();
+        return deletedResponse( 'Coache deleted successfully');
     }
 
     public function sessions(Coache $coaches)

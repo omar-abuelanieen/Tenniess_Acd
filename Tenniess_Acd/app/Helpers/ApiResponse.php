@@ -73,3 +73,13 @@ if (!function_exists('validationErrorResponse')) {
         ], 422);
     }
 }
+
+if (!function_exists('unauthorizedResponse')) {
+    function unauthorizedResponse(string $message = 'Unauthorized')
+    {
+        return response()->json([
+            'success' => false,
+            'message' => $message
+        ], 401);
+    }
+}
