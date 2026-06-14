@@ -13,10 +13,12 @@ class UserSubscription extends Model
         'plan_id',
         'start_date',
         'end_date',
-        'payment_status',
-        'status'
+        
     ];
-
+   protected $guarded = [
+        'status',
+        'payment_status',
+    ];
     public function player()
     {
         return $this->belongsTo(Player::class);
