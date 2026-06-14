@@ -14,9 +14,9 @@ class Subscription extends Model
 
     use SoftDeletes;
 
-  protected $fillable = ['player_id','training_session_id','status','payment_status'];
+  protected $fillable = ['player_id','plan_id','start_date','end_date'];
 
-
+ protected $guarded = ['payment_status','status'];
 
   public function player(){
 
@@ -26,14 +26,16 @@ class Subscription extends Model
 
 
 
-    public function session()
+    public function plan()
     {
-        return $this->belongsTo(Session::class, 'training_session_id');
+        return $this->belongsTo(Plan::class);
     }
 
     protected $casts = [
         'status' => 'string',
         'payment_status' => 'string',
+        'start_date' => 'date',
+        'end_date' => 'date',
     ];
 
     protected function status(): Attribute
@@ -55,7 +57,12 @@ class Subscription extends Model
             'active',
             'pending',
             'cancelled',
+            'frozen',
+            'expired',
+            'approved',
+            'rejected'
         ]);
     }
+
 
 }

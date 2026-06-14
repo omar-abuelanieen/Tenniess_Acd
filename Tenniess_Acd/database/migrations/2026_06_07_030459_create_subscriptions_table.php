@@ -15,9 +15,10 @@ return new class extends Migration
         $table->id();
 
         $table->foreignId('player_id')->constrained()->cascadeOnDelete();
-        $table->foreignId('training_session_id')->constrained()->cascadeOnDelete();
-
-        $table->enum('status', ['active', 'cancelled', 'frozen','pending'])->default('active');
+        $table->foreignId('plan_id')->constrained()->cascadeOnDelete();
+        $table->enum('status', ['active', 'cancelled', 'frozen','pending','expired','approved','rejected'])->default('pending');
+        $table->date('start_date');
+        $table->date('end_date');
         $table->string('payment_status');
 
         $table->timestamps();

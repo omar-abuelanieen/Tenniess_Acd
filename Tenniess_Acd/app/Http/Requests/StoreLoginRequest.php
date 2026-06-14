@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreSubscibitionRequest extends FormRequest
+class StoreLoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,13 +23,8 @@ class StoreSubscibitionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'player_id' => 'required|exists:players,id',
-            'user_id' => 'required|exists:users,id',
-            'plan_id' => 'required|exists:plans,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
-            'status' => 'required|in:pending,active,canceled,expired,frozen,approved,rejected',
-            'payment_status' => 'required|in:pending,paid,failed',
+            'email' => 'required|email',
+            'password' => 'required|string|min:8',
         ];
     }
 }

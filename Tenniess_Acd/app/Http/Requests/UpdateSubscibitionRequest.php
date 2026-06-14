@@ -24,9 +24,12 @@ class UpdateSubscibitionRequest extends FormRequest
     {
         return [
             'player_id' => 'sometimes|required|exists:players,id',
-            'training_session_id' => 'sometimes|required|exists:training_sessions,id',
-            'status' => 'sometimes|required|string|max:255',
-            'payment_status' => 'sometimes|required|string|max:255',
+            'user_id' => 'sometimes|required|exists:users,id',
+            'plan_id' => 'sometimes|required|exists:plans,id',
+            'start_date' => 'sometimes|required|date',
+            'end_date' => 'sometimes|required|date|after:start_date',
+            'status' => 'sometimes|required|in:pending,active,canceled,expired,frozen,approved,rejected',
+            'payment_status' => 'sometimes|required|in:pending,paid,failed',
         ];
     }
 }

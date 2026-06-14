@@ -28,6 +28,10 @@ class Player extends Model
     {
         return $this->hasMany(Session::class);
     }
+    public function subscriptionRequests()
+{
+    return $this->hasMany(UserSubscription::class, 'player_id');
+}
 
     public function attendances()
     {

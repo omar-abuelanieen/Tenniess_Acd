@@ -10,6 +10,8 @@ use App\Http\Controllers\SessionController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\SubscribtionController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PlanController;
+use App\Http\Controllers\UserSubscriptionController;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -27,8 +29,8 @@ Route::prefix('users')->group(function () {
     Route::get('/{user}/edit', [UserController::class, 'edit']);
     Route::put('/{user}', [UserController::class, 'update'])->middleware('auth:api');
     Route::delete('/{user}', [UserController::class, 'destroy'])->middleware('auth:api');
- Route::put('/users/{user}/restore', [UserController::class, 'restore'])->name('users.restore');
- Route::delete('/users/{user}/force', [UserController::class, 'forceDelete'])->name('users.forceDelete');
+ Route::put('/{user}/restore', [UserController::class, 'restore'])->name('users.restore');
+ Route::delete('/{user}/force', [UserController::class, 'forceDelete'])->name('users.forceDelete');
 });
 
 
@@ -41,8 +43,8 @@ Route::prefix('roles')->group(function () {
     Route::put('/{role}', [RoleController::class, 'update'])->middleware('auth:api');
     Route::delete('/{role}', [RoleController::class, 'destroy'])->middleware('auth:api');
 
-Route::put('/roles/{role}/restore', [RoleController::class, 'restore'])->name('roles.restore');
-Route::delete('/roles/{role}/force', [RoleController::class, 'forceDelete'])->name('roles.forceDelete');
+Route::put('/{role}/restore', [RoleController::class, 'restore'])->name('roles.restore');
+Route::delete('/{role}/force', [RoleController::class, 'forceDelete'])->name('roles.forceDelete');
 });
 
 Route::prefix('coaches')->group(function () {
@@ -53,8 +55,8 @@ Route::prefix('coaches')->group(function () {
     Route::get('/{coache}/edit', [CoacheController::class, 'edit']);
     Route::put('/{coache}', [CoacheController::class, 'update'])->middleware('auth:api');
     Route::delete('/{coache}', [CoacheController::class, 'destroy'])->middleware('auth:api');
-Route::put('/coaches/{coache}/restore', [CoacheController::class, 'restore'])->name('coaches.restore');
-Route::delete('/coaches/{coache}/force', [CoacheController::class, 'forceDelete'])->name('coaches.forceDelete');
+Route::put('/{coache}/restore', [CoacheController::class, 'restore'])->name('coaches.restore');
+Route::delete('/{coache}/force', [CoacheController::class, 'forceDelete'])->name('coaches.forceDelete');
 
 });
 
@@ -67,8 +69,8 @@ Route::prefix('players')->group(function () {
     Route::get('/{player}/edit', [PlayerController::class, 'edit']);
     Route::put('/{player}', [PlayerController::class, 'update'])->middleware('auth:api');
     Route::delete('/{player}', [PlayerController::class, 'destroy'])->middleware('auth:api');
-Route::put('/players/{player}/restore', [PlayerController::class, 'restore'])->name('players.restore');
-Route::delete('/players/{player}/force', [PlayerController::class, 'forceDelete'])->name('players.forceDelete');
+Route::put('/{player}/restore', [PlayerController::class, 'restore'])->name('players.restore');
+Route::delete('/{player}/force', [PlayerController::class, 'forceDelete'])->name('players.forceDelete');
 });
 
 
@@ -98,22 +100,30 @@ Route::prefix('attendances')->group(function () {
 
 
 Route::prefix('subscriptions')->group(function () {
+
     Route::get('/trashed', [SubscribtionController::class, 'trashed']);
     Route::get('/', [SubscribtionController::class, 'index']);
-    Route::post('/', [SubscribtionController::class, 'store'])->middleware('auth:api');
     Route::get('/{subscription}', [SubscribtionController::class, 'show']);
     Route::get('/{subscription}/edit', [SubscribtionController::class, 'edit']);
+
+    Route::post('/', [SubscribtionController::class, 'store'])->middleware('auth:api');
     Route::put('/{subscription}', [SubscribtionController::class, 'update'])->middleware('auth:api');
- Route::delete('/{subscription}', [SubscribtionController::class, 'destroy'])->middleware('auth:api');  
-Route::patch('/subscriptions/{id}/restore', [SubscribtionController::class, 'restore'])->middleware('auth:api');
-Route::delete('/subscriptions/{id}/force-delete', [SubscribtionController::class, 'forceDelete'])->middleware('auth:api');
-Route::get('//valid', [SubscribtionController::class, 'validSubscriptions'])->middleware('auth:api');
-Route::patch('/{subscription}/activate', [SubscribtionController::class, 'activate'])->middleware('auth:api');
-Route::patch('/{subscription}/cancel', [SubscribtionController::class, 'cancel'])->middleware('auth:api');
-Route::patch('/{subscription}/freeze', [SubscribtionController::class, 'freeze'])->middleware('auth:api');
-});
+    Route::delete('/{subscription}', [SubscribtionController::class, 'destroy'])->middleware('auth:api');
 
-Route::middleware('auth:api')->get('/test', function () {
-    return auth()->user();
-});
+    Route::get('/valid', [SubscribtionController::class, 'validSubscriptions'])->middleware('auth:api');
+    Route::get('/expired', [SubscribtionController::class, 'getExpiredSubscriptions'])->middleware('auth:api');
 
+    Route::patch('/{id}/activate', [SubscribtionController::class, 'activate'])->middleware('auth:api');
+    Route::patch('/{id}/cancel', [SubscribtionController::class, 'cancel'])->middleware('auth:api');
+    Route::patch('/{id}/freeze', [SubscribtionController::class, 'freeze'])->middleware('auth:api');
+    Route::patch('/{id}/renew', [SubscribtionController::class, 'renew'])->middleware('auth:api');
+
+    Route::post('/create-subscription-request', [SubscribtionController::class, 'createSubscriptionRequest']);
+    Route::get('/pending-requests', [SubscribtionController::class, 'pending'])->middleware('auth:api');
+    Route::patch('/{id}/approve', [SubscribtionController::class, 'approve'])->middleware('auth:api');
+    Route::patch('/{id}/reject', [SubscribtionController::class, 'reject'])->middleware('auth:api');
+
+    Route::patch('/{id}/restore', [SubscribtionController::class, 'restore'])->middleware('auth:api');
+    Route::delete('/{id}/force-delete', [SubscribtionController::class, 'forceDelete'])->middleware('auth:api');
+
+});
