@@ -102,16 +102,18 @@ Route::prefix('attendances')->group(function () {
 Route::prefix('subscriptions')->group(function () {
 
     Route::get('/trashed', [SubscribtionController::class, 'trashed']);
-    Route::get('/', [SubscribtionController::class, 'index']);
-    Route::get('/{subscription}', [SubscribtionController::class, 'show']);
-    Route::get('/{subscription}/edit', [SubscribtionController::class, 'edit']);
-
-    Route::post('/', [SubscribtionController::class, 'store'])->middleware('auth:api');
-    Route::put('/{subscription}', [SubscribtionController::class, 'update'])->middleware('auth:api');
-    Route::delete('/{subscription}', [SubscribtionController::class, 'destroy'])->middleware('auth:api');
-
     Route::get('/valid', [SubscribtionController::class, 'validSubscriptions'])->middleware('auth:api');
     Route::get('/expired', [SubscribtionController::class, 'getExpiredSubscriptions'])->middleware('auth:api');
+    Route::get('/pending-requests', [SubscribtionController::class, 'pending'])->middleware('auth:api');
+
+    Route::get('/', [SubscribtionController::class, 'index']);
+    Route::post('/', [SubscribtionController::class, 'store'])->middleware('auth:api');
+
+    Route::get('/{subscription}', [SubscribtionController::class, 'show'])->whereNumber('subscription');
+    Route::get('/{subscription}/edit', [SubscribtionController::class, 'edit'])->whereNumber('subscription');
+
+    Route::put('/{subscription}', [SubscribtionController::class, 'update'])->middleware('auth:api')->whereNumber('subscription');
+    Route::delete('/{subscription}', [SubscribtionController::class, 'destroy'])->middleware('auth:api')->whereNumber('subscription');
 
     Route::patch('/{id}/activate', [SubscribtionController::class, 'activate'])->middleware('auth:api');
     Route::patch('/{id}/cancel', [SubscribtionController::class, 'cancel'])->middleware('auth:api');
@@ -119,11 +121,30 @@ Route::prefix('subscriptions')->group(function () {
     Route::patch('/{id}/renew', [SubscribtionController::class, 'renew'])->middleware('auth:api');
 
     Route::post('/create-subscription-request', [SubscribtionController::class, 'createSubscriptionRequest']);
-    Route::get('/pending-requests', [SubscribtionController::class, 'pending'])->middleware('auth:api');
+
     Route::patch('/{id}/approve', [SubscribtionController::class, 'approve'])->middleware('auth:api');
     Route::patch('/{id}/reject', [SubscribtionController::class, 'reject'])->middleware('auth:api');
 
     Route::patch('/{id}/restore', [SubscribtionController::class, 'restore'])->middleware('auth:api');
     Route::delete('/{id}/force-delete', [SubscribtionController::class, 'forceDelete'])->middleware('auth:api');
+
+});
+
+
+
+Route::prefix('plans')->group(function () {
+
+    Route::get('/', [PlanController::class, 'index']);
+
+    Route::get('/{plan}', [PlanController::class, 'show']);
+    Route::get('/{plan}/edit', [PlanController::class, 'edit']);
+
+    Route::middleware('auth:api')->group(function () {
+        Route::post('/', [PlanController::class, 'store']);
+        Route::put('/{plan}', [PlanController::class, 'update']);
+        Route::delete('/{plan}', [PlanController::class, 'destroy']);
+
+
+    });
 
 });

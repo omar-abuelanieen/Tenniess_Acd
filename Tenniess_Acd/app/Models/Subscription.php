@@ -8,35 +8,36 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Subscription extends Model
 {
-
-
-
-
     use SoftDeletes;
 
-  protected $fillable = ['player_id','plan_id','start_date','end_date'];
+    protected $fillable = [
+        'player_id',
+        'plan_id',
+        'start_date',
+        'end_date',
+    ];
 
- protected $guarded = ['payment_status','status'];
+    protected $guarded = [
+        'status',
+        'payment_status',
+    ];
 
-  public function player(){
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+        'status' => 'string',
+        'payment_status' => 'string',
+    ];
 
-      return $this->belongsTo(Player::class);
-
-  }
-
-
+    public function player()
+    {
+        return $this->belongsTo(Player::class)->withDefault();
+    }
 
     public function plan()
     {
-        return $this->belongsTo(Plan::class);
+        return $this->belongsTo(Plan::class)->withDefault();
     }
-
-    protected $casts = [
-        'status' => 'string',
-        'payment_status' => 'string',
-        'start_date' => 'date',
-        'end_date' => 'date',
-    ];
 
     protected function status(): Attribute
     {
@@ -51,18 +52,19 @@ class Subscription extends Model
             get: fn ($value) => ucfirst($value)
         );
     }
-     public function scopeValid($query)
+
+    public function scopeActive($query)
     {
-        return $query->whereIn('status', [
-            'active',
-            'pending',
-            'cancelled',
-            'frozen',
-            'expired',
-            'approved',
-            'rejected'
-        ]);
+        return $query->where('status', 'active');
     }
 
+    public function scopeExpired($query)
+    {
+        return $query->where('status', 'expired');
+    }
 
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
 }
