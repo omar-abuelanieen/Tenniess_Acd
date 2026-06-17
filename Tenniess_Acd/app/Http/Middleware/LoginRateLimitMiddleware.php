@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use App\Models\LoginAttempt;
+use Illuminate\Support\Facades\Auth;
 
 class LoginRateLimitMiddleware
 {
@@ -38,7 +39,9 @@ class LoginRateLimitMiddleware
 
         $response = $next($request);
 
-        if ($response->getStatusCode() === 401 || $response->getStatusCode() === 403) {
+        $status = $response->getStatusCode();
+
+        if (in_array($status, [401, 403])) {
 
             $record->failed_attempts++;
 
@@ -62,7 +65,8 @@ class LoginRateLimitMiddleware
             $record->save();
         }
 
-        if ($response->getStatusCode() === 200) {
+        if ($status === 200) {
+
             LoginAttempt::where('email', $email)
                 ->where('ip_address', $ip)
                 ->delete();
