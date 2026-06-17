@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\CoacheController;
@@ -10,145 +10,153 @@ use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\SubscribtionController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PlanController;
 
-Route::post('/login', [AuthController::class, 'login']) ->name('login') ->middleware('login.rate.limit');
- Route::post('/register', [AuthController::class, 'register'])->name('register');
- Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
+Route::prefix('auth')->controller(AuthController::class)->group(function () {
 
-Route::prefix('users')->group(function () {
+    Route::post('login', 'login')->middleware('login.rate.limit');
+    Route::post('register', 'register');
+    Route::post('logout', 'logout')->middleware('auth:api');
+});
 
-    Route::get('/', [UserController::class, 'index']);
-    Route::get('/{user}', [UserController::class, 'show']);
+Route::prefix('users')->controller(UserController::class)->group(function () {
+
+    Route::get('/', 'index');
+    Route::get('/{user}', 'show');
 
     Route::middleware('auth:api')->group(function () {
-        Route::get('/trashed', [UserController::class, 'trashed']);
-        Route::post('/', [UserController::class, 'store']);
-        Route::put('/{user}', [UserController::class, 'update']);
-        Route::delete('/{user}', [UserController::class, 'destroy']);
-        Route::put('/{user}/restore', [UserController::class, 'restore']);
-        Route::delete('/{user}/force', [UserController::class, 'forceDelete']);
-         Route::get('/{user}/edit', [UserController::class, 'edit']);
 
+        Route::get('/trashed', 'trashed');
+        Route::post('/', 'store');
+        Route::put('/{user}', 'update');
+        Route::delete('/{user}', 'destroy');
+        Route::put('/{user}/restore', 'restore');
+        Route::delete('/{user}/force', 'forceDelete');
+        Route::get('/{user}/edit', 'edit');
     });
 });
 
-Route::prefix('roles')->group(function () {
+Route::prefix('roles')->controller(RoleController::class)->group(function () {
 
-    Route::get('/', [RoleController::class, 'index']);
-    Route::get('/{role}', [RoleController::class, 'show']);
+    Route::get('/', 'index');
+    Route::get('/{role}', 'show');
 
     Route::middleware('auth:api')->group(function () {
-        Route::get('/trashed', [RoleController::class, 'trashed']);
-        Route::post('/', [RoleController::class, 'store']);
-        Route::put('/{role}', [RoleController::class, 'update']);
-        Route::delete('/{role}', [RoleController::class, 'destroy']);
-        Route::put('/{role}/restore', [RoleController::class, 'restore']);
-        Route::delete('/{role}/force', [RoleController::class, 'forceDelete']);
-         Route::get('/{role}/edit', [RoleController::class, 'edit']);
+
+        Route::get('/trashed', 'trashed');
+        Route::post('/', 'store');
+        Route::put('/{role}', 'update');
+        Route::delete('/{role}', 'destroy');
+        Route::put('/{role}/restore', 'restore');
+        Route::delete('/{role}/force', 'forceDelete');
+        Route::get('/{role}/edit', 'edit');
     });
 });
 
-Route::prefix('coaches')->group(function () {
+Route::prefix('coaches')->controller(CoacheController::class)->group(function () {
 
-    Route::get('/', [CoacheController::class, 'index']);
-    Route::get('/{coache}', [CoacheController::class, 'show']);
+    Route::get('/', 'index');
+    Route::get('/{coache}', 'show');
 
     Route::middleware('auth:api')->group(function () {
-        Route::post('/', [CoacheController::class, 'store']);
-        Route::put('/{coache}', [CoacheController::class, 'update']);
-        Route::delete('/{coache}', [CoacheController::class, 'destroy']);
-        Route::put('/{coache}/restore', [CoacheController::class, 'restore']);
-        Route::delete('/{coache}/force', [CoacheController::class, 'forceDelete']);
-        Route::get('/trashed', [CoacheController::class, 'trashed']);
-        Route::get('/{coache}/edit', [CoacheController::class, 'edit']);
 
+        Route::post('/', 'store');
+        Route::put('/{coache}', 'update');
+        Route::delete('/{coache}', 'destroy');
+        Route::put('/{coache}/restore', 'restore');
+        Route::delete('/{coache}/force', 'forceDelete');
+        Route::get('/trashed', 'trashed');
+        Route::get('/{coache}/edit', 'edit');
     });
 });
 
-Route::prefix('players')->group(function () {
+Route::prefix('players')->controller(PlayerController::class)->group(function () {
 
-    Route::get('/', [PlayerController::class, 'index']);
-
-    Route::get('/{player}', [PlayerController::class, 'show']);
+    Route::get('/', 'index');
+    Route::get('/{player}', 'show');
 
     Route::middleware('auth:api')->group(function () {
-         Route::get('/trashed', [PlayerController::class, 'trashed']);
-        Route::post('/', [PlayerController::class, 'store']);
-        Route::put('/{player}', [PlayerController::class, 'update']);
-        Route::delete('/{player}', [PlayerController::class, 'destroy']);
-        Route::put('/{player}/restore', [PlayerController::class, 'restore']);
-        Route::delete('/{player}/force', [PlayerController::class, 'forceDelete']);
-         Route::get('/{player}/edit', [PlayerController::class, 'edit']);
 
+        Route::get('/trashed', 'trashed');
+        Route::post('/', 'store');
+        Route::put('/{player}', 'update');
+        Route::delete('/{player}', 'destroy');
+        Route::put('/{player}/restore', 'restore');
+        Route::delete('/{player}/force', 'forceDelete');
+        Route::get('/{player}/edit', 'edit');
     });
 });
 
-Route::prefix('sessions')->group(function () {
+Route::prefix('sessions')->controller(SessionController::class)->group(function () {
 
-    Route::get('/', [SessionController::class, 'index']);
-    Route::get('/{session}', [SessionController::class, 'show']);
+    Route::get('/', 'index');
+    Route::get('/{session}', 'show');
 
     Route::middleware('auth:api')->group(function () {
-        Route::post('/', [SessionController::class, 'store']);
-        Route::put('/{session}', [SessionController::class, 'update']);
-        Route::delete('/{session}', [SessionController::class, 'destroy']);
-        Route::get('/{session}/edit', [SessionController::class, 'edit']);
+
+        Route::post('/', 'store');
+        Route::put('/{session}', 'update');
+        Route::delete('/{session}', 'destroy');
+        Route::get('/{session}/edit', 'edit');
     });
 });
 
-Route::prefix('attendances')->group(function () {
+Route::prefix('attendances')->controller(AttendanceController::class)->group(function () {
 
-    Route::get('/', [AttendanceController::class, 'index']);
-    Route::get('/{attendance}', [AttendanceController::class, 'show']);
+    Route::get('/', 'index');
+    Route::get('/{attendance}', 'show');
 
     Route::middleware('auth:api')->group(function () {
-        Route::post('/', [AttendanceController::class, 'store']);
-        Route::put('/{attendance}', [AttendanceController::class, 'update']);
-        Route::delete('/{attendance}', [AttendanceController::class, 'destroy']);
-         Route::get('/{attendance}/edit', [AttendanceController::class, 'edit']);
 
+        Route::post('/', 'store');
+        Route::put('/{attendance}', 'update');
+        Route::delete('/{attendance}', 'destroy');
+        Route::get('/{attendance}/edit', 'edit');
     });
 });
 
-Route::prefix('subscriptions')->group(function () {
+Route::prefix('subscriptions')->controller(SubscribtionController::class)->group(function () {
 
-    Route::get('/', [SubscribtionController::class, 'index']);
-
-    Route::get('/{subscription}', [SubscribtionController::class, 'show'])->whereNumber('subscription');
-    Route::get('/{subscription}/edit', [SubscribtionController::class, 'edit'])->whereNumber('subscription');
+    Route::get('/', 'index');
+    Route::get('/{subscription}', 'show')->whereNumber('subscription');
+    Route::post('/create-subscription-request', 'createSubscriptionRequest');
 
     Route::middleware('auth:api')->group(function () {
-         Route::get('/trashed', [SubscribtionController::class, 'trashed']);
-    Route::get('/valid', [SubscribtionController::class, 'validSubscriptions']);
-    Route::get('/expired', [SubscribtionController::class, 'getExpiredSubscriptions']);
-    Route::get('/pending-requests', [SubscribtionController::class, 'pending']);
-        Route::post('/', [SubscribtionController::class, 'store']);
-        Route::put('/{subscription}', [SubscribtionController::class, 'update'])->whereNumber('subscription');
-        Route::delete('/{subscription}', [SubscribtionController::class, 'destroy'])->whereNumber('subscription');
-        Route::patch('/{id}/activate', [SubscribtionController::class, 'activate']);
-        Route::patch('/{id}/cancel', [SubscribtionController::class, 'cancel']);
-        Route::patch('/{id}/freeze', [SubscribtionController::class, 'freeze']);
-        Route::patch('/{id}/renew', [SubscribtionController::class, 'renew']);
-        Route::post('/create-subscription-request', [SubscribtionController::class, 'createSubscriptionRequest']);
-        Route::patch('/{id}/approve', [SubscribtionController::class, 'approve']);
-        Route::patch('/{id}/reject', [SubscribtionController::class, 'reject']);
-        Route::patch('/{id}/restore', [SubscribtionController::class, 'restore']);
-        Route::delete('/{id}/force-delete', [SubscribtionController::class, 'forceDelete']);
 
+        Route::get('/trashed', 'trashed');
+        Route::get('/valid', 'validSubscriptions');
+        Route::get('/expired', 'getExpiredSubscriptions');
+        Route::get('/pending-requests', 'pending');
+
+        Route::post('/', 'store');
+        Route::put('/{subscription}', 'update')->whereNumber('subscription');
+        Route::delete('/{subscription}', 'destroy')->whereNumber('subscription');
+      Route::get('/{subscription}/edit', 'edit')->whereNumber('subscription');
+
+        Route::patch('/{id}/activate', 'activate');
+        Route::patch('/{id}/cancel', 'cancel');
+        Route::patch('/{id}/freeze', 'freeze');
+        Route::patch('/{id}/renew', 'renew');
+
+
+        Route::patch('/{id}/approve', 'approve');
+        Route::patch('/{id}/reject', 'reject');
+        Route::patch('/{id}/restore', 'restore');
+        Route::delete('/{id}/force-delete', 'forceDelete');
     });
 });
 
-Route::prefix('plans')->group(function () {
+Route::prefix('plans')->controller(PlanController::class)->group(function () {
 
-    Route::get('/', [PlanController::class, 'index']);
-    Route::get('/{plan}', [PlanController::class, 'show']);
-    Route::get('/{plan}/edit', [PlanController::class, 'edit']);
+    Route::get('/', 'index');
+    Route::get('/{plan}', 'show');
 
     Route::middleware('auth:api')->group(function () {
-        Route::post('/', [PlanController::class, 'store']);
-        Route::put('/{plan}', [PlanController::class, 'update']);
-        Route::delete('/{plan}', [PlanController::class, 'destroy']);
+
+        Route::post('/', 'store');
+        Route::put('/{plan}', 'update');
+        Route::delete('/{plan}', 'destroy');
+        Route::get('/{plan}/edit', 'edit');
+
     });
 });
