@@ -18,6 +18,7 @@ class SubscribtionController extends Controller
 
     public function store(StoreSubscibitionRequest $request)
     {
+
         $subscription = Subscription::create([
             'player_id' => $request->player_id,
             'plan_id' => $request->plan_id,
@@ -25,11 +26,11 @@ class SubscribtionController extends Controller
             'end_date' => now()->addMonth(),
             'status' => 'active',
             'payment_status' => 'pending',
+
         ]);
 
         return createdResponse($subscription->load(['player', 'plan']), 'Subscription created successfully');
-    }
-
+        }
     public function show($id)
     {
         $subscription = Subscription::with(['player', 'plan'])->findOrFail($id);
@@ -51,7 +52,7 @@ class SubscribtionController extends Controller
         return updatedResponse($subscription->fresh()->load(['player', 'plan']), 'Subscription updated successfully');
     }
 
-    public function validSubscriptions()
+    public function validSubscriptions(Subscription $subscription)
     {
         $subscriptions = Subscription::valid()
             ->with(['player', 'plan'])
