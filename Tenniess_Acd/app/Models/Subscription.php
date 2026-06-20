@@ -10,17 +10,15 @@ class Subscription extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = [
-        'player_id',
-        'plan_id',
-        'start_date',
-        'end_date',
-    ];
-
-    protected $guarded = [
-        'status',
-        'payment_status',
-    ];
+   protected $fillable = [
+    'player_id',
+    'plan_id',
+    'start_date',
+    'end_date',
+    'status',
+    'payment_status',
+];
+   
 
     protected $casts = [
         'start_date' => 'date',

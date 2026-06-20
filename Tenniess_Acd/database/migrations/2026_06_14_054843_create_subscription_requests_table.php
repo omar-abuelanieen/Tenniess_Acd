@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('plan_id')->constrained()->onDelete('cascade');
             $table->string('start_date');
             $table->string('end_date');
-            $table->string('payment_status')->deufalt('pending');
+            $table->string('payment_status')->default('unpaid');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamps();
         });

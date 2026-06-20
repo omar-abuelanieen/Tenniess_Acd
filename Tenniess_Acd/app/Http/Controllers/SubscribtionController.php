@@ -24,8 +24,8 @@ class SubscribtionController extends Controller
             'plan_id' => $request->plan_id,
             'start_date' => now(),
             'end_date' => now()->addMonth(),
-            'status' => 'active',
-            'payment_status' => 'pending',
+            'status' => $request->status,
+            'payment_status' =>$request->payment_status,
 
         ]);
 
