@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
@@ -12,6 +13,8 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\SubscribtionController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\UserSubscriptionController;
+use App\Http\Controllers\AdminController;
+
 
 Route::prefix('auth')->controller(AuthController::class)->group(function () {
 
@@ -19,6 +22,8 @@ Route::prefix('auth')->controller(AuthController::class)->group(function () {
     Route::post('register', 'register');
     Route::post('logout', 'logout')->middleware('auth:api');
 });
+
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
 
 Route::prefix('users')->controller(UserController::class)->group(function () {
 
@@ -225,4 +230,5 @@ Route::prefix('plans')->controller(PlanController::class)->group(function () {
 
         Route::get('/{plan}/edit', 'edit');
     });
+
 });

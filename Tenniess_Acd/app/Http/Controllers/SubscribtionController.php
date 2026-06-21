@@ -6,18 +6,24 @@ use App\Models\Subscription;
 use App\Models\UserSubscription;
 use App\Http\Requests\StoreSubscibitionRequest;
 use App\Http\Requests\UpdateSubscibitionRequest;
-use App\Models\plan;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+
 class SubscribtionController extends Controller
 {
+    use AuthorizesRequests;
     public function index()
     {
         $subscriptions = Subscription::with(['player', 'plan'])->get();
 
-        return successResponse($subscriptions, 'Subscriptions retrieved successfully');
+        return successResponse(
+            $subscriptions,
+            'Subscriptions retrieved successfully'
+        );
     }
 
     public function store(StoreSubscibitionRequest $request)
     {
+        $this->authorize('create', Subscription::class);
 
         $subscription = Subscription::create([
             'player_id' => $request->player_id,
@@ -25,72 +31,112 @@ class SubscribtionController extends Controller
             'start_date' => now(),
             'end_date' => now()->addMonth(),
             'status' => $request->status,
-            'payment_status' =>$request->payment_status,
-
+            'payment_status' => $request->payment_status,
         ]);
 
-        return createdResponse($subscription->load(['player', 'plan']), 'Subscription created successfully');
-        }
+        return createdResponse(
+            $subscription->load(['player', 'plan']),
+            'Subscription created successfully'
+        );
+    }
+
     public function show($id)
     {
         $subscription = Subscription::with(['player', 'plan'])->findOrFail($id);
 
-        return successResponse($subscription, 'Subscription retrieved successfully');
+        return successResponse(
+            $subscription,
+            'Subscription retrieved successfully'
+        );
     }
 
     public function edit($id)
     {
         $subscription = Subscription::findOrFail($id);
 
-        return successResponse($subscription, 'Subscription retrieved successfully for editing');
+        return successResponse(
+            $subscription,
+            'Subscription retrieved successfully for editing'
+        );
     }
 
     public function update(UpdateSubscibitionRequest $request, Subscription $subscription)
     {
+        $this->authorize('update', $subscription);
+
         $subscription->update($request->validated());
 
-        return updatedResponse($subscription->fresh()->load(['player', 'plan']), 'Subscription updated successfully');
+        return updatedResponse(
+            $subscription->fresh()->load(['player', 'plan']),
+            'Subscription updated successfully'
+        );
     }
 
-    public function validSubscriptions(Subscription $subscription)
+    public function validSubscriptions()
     {
         $subscriptions = Subscription::valid()
             ->with(['player', 'plan'])
             ->get();
 
-        return successResponse($subscriptions, 'Valid subscriptions retrieved successfully');
+        return successResponse(
+            $subscriptions,
+            'Valid subscriptions retrieved successfully'
+        );
     }
 
     public function activate($id)
     {
         $subscription = Subscription::findOrFail($id);
 
-        $subscription->update(['status' => 'active']);
+        $this->authorize('update', $subscription);
 
-        return updatedResponse($subscription, 'Subscription activated successfully');
+        $subscription->update([
+            'status' => 'active'
+        ]);
+
+        return updatedResponse(
+            $subscription,
+            'Subscription activated successfully'
+        );
     }
 
     public function cancel($id)
     {
         $subscription = Subscription::findOrFail($id);
 
-        $subscription->update(['status' => 'cancelled']);
+        $this->authorize('update', $subscription);
 
-        return updatedResponse($subscription, 'Subscription cancelled successfully');
+        $subscription->update([
+            'status' => 'cancelled'
+        ]);
+
+        return updatedResponse(
+            $subscription,
+            'Subscription cancelled successfully'
+        );
     }
 
     public function freeze($id)
     {
         $subscription = Subscription::findOrFail($id);
 
-        $subscription->update(['status' => 'frozen']);
+        $this->authorize('update', $subscription);
 
-        return updatedResponse($subscription, 'Subscription frozen successfully');
+        $subscription->update([
+            'status' => 'frozen'
+        ]);
+
+        return updatedResponse(
+            $subscription,
+            'Subscription frozen successfully'
+        );
     }
 
     public function renew($id)
     {
         $subscription = Subscription::findOrFail($id);
+
+        $this->authorize('update', $subscription);
 
         $subscription->update([
             'status' => 'active',
@@ -98,7 +144,10 @@ class SubscribtionController extends Controller
             'end_date' => now()->addMonth(),
         ]);
 
-        return updatedResponse($subscription, 'Subscription renewed successfully');
+        return updatedResponse(
+            $subscription,
+            'Subscription renewed successfully'
+        );
     }
 
     public function getExpiredSubscriptions()
@@ -107,30 +156,40 @@ class SubscribtionController extends Controller
             ->with(['player', 'plan'])
             ->get();
 
-        return successResponse($subscriptions, 'Expired subscriptions retrieved successfully');
+        return successResponse(
+            $subscriptions,
+            'Expired subscriptions retrieved successfully'
+        );
     }
 
     public function destroy($id)
     {
         $subscription = Subscription::findOrFail($id);
 
+        $this->authorize('delete', $subscription);
+
         $subscription->delete();
 
-        return deletedResponse('Subscription deleted successfully');
+        return deletedResponse(
+            'Subscription deleted successfully'
+        );
     }
 
     public function createSubscriptionRequest(StoreSubscibitionRequest $request)
     {
-        $subscriptionRequest= UserSubscription::create([
-    'player_id' => $request->player_id,
-    'plan_id' => $request->plan_id,
-    'status' => 'pending',
-    'start_date' => now(),
-    'end_date' => now()->addMonth(),
-    'payment_status' => 'pending',
-]);
+        $subscriptionRequest = UserSubscription::create([
+            'player_id' => $request->player_id,
+            'plan_id' => $request->plan_id,
+            'status' => 'pending',
+            'start_date' => now(),
+            'end_date' => now()->addMonth(),
+            'payment_status' => 'pending',
+        ]);
 
-        return createdResponse($subscriptionRequest, 'Subscription request created successfully');
+        return createdResponse(
+            $subscriptionRequest,
+            'Subscription request created successfully'
+        );
     }
 
     public function pending()
@@ -139,12 +198,17 @@ class SubscribtionController extends Controller
             ->where('status', 'pending')
             ->get();
 
-        return successResponse($requests, 'Pending requests retrieved successfully');
+        return successResponse(
+            $requests,
+            'Pending requests retrieved successfully'
+        );
     }
 
     public function approve($id)
     {
         $request = UserSubscription::findOrFail($id);
+
+        $this->authorize('create', Subscription::class);
 
         $subscription = Subscription::create([
             'player_id' => $request->player_id,
@@ -155,44 +219,70 @@ class SubscribtionController extends Controller
             'payment_status' => 'pending',
         ]);
 
-        $request->update(['status' => 'approved']);
+        $request->update([
+            'status' => 'approved'
+        ]);
 
-        return createdResponse($subscription, 'Subscription approved successfully');
+        return createdResponse(
+            $subscription,
+            'Subscription approved successfully'
+        );
     }
 
     public function reject($id)
     {
         $request = UserSubscription::findOrFail($id);
 
-        $request->update(['status' => 'rejected']);
+        $this->authorize('update', Subscription::class);
 
-        return updatedResponse($request, 'Subscription request rejected');
+        $request->update([
+            'status' => 'rejected'
+        ]);
+
+        return updatedResponse(
+            $request,
+            'Subscription request rejected'
+        );
     }
 
     public function trashed()
     {
+        $this->authorize('viewAny', Subscription::class);
+
         $subscriptions = Subscription::onlyTrashed()
             ->with(['player', 'plan'])
             ->get();
 
-        return successResponse($subscriptions, 'Trashed subscriptions retrieved successfully');
+        return successResponse(
+            $subscriptions,
+            'Trashed subscriptions retrieved successfully'
+        );
     }
 
     public function restore($id)
     {
         $subscription = Subscription::withTrashed()->findOrFail($id);
 
+        $this->authorize('restore', $subscription);
+
         $subscription->restore();
 
-        return successResponse($subscription, 'Subscription restored successfully');
+        return successResponse(
+            $subscription,
+            'Subscription restored successfully'
+        );
     }
 
     public function forceDelete($id)
     {
         $subscription = Subscription::withTrashed()->findOrFail($id);
 
+        $this->authorize('forceDelete', $subscription);
+
         $subscription->forceDelete();
 
-        return deletedResponse('Subscription permanently deleted successfully');
+        return deletedResponse(
+            'Subscription permanently deleted successfully'
+        );
     }
 }

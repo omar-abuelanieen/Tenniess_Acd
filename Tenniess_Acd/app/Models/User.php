@@ -45,6 +45,8 @@ class User extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+         'is_admin' => 'boolean',
+
     ];
 
     protected function name(): Attribute
@@ -61,7 +63,7 @@ class User extends Authenticatable implements JWTSubject
         );
     }
 
-    public function roles()
+    public function role()
     {
         return $this->hasOne(Role::class);
     }

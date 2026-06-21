@@ -3,102 +3,128 @@
 namespace App\Http\Controllers;
 
 use App\Models\Coache;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreCoacheRequest;
 use App\Http\Requests\UpdateCoacheRequest;
-use App\Models\Session;
-use App\Models\Attendance;
-use App\Models\Player;
+
 class CoacheController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    use AuthorizesRequests;
     public function index()
     {
-        $coaches =Coache::with('sessions')->get();
+        $this->authorize('viewAny', Coache::class);
+
+        $coaches = Coache::with('sessions')->get();
+
         return response()->json($coaches);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreCoacheRequest $request)
     {
-        $coaches =Coache::create($request->validated());
-        return createdResponse($coaches, 'Coache created successfully');
+        $this->authorize('create', Coache::class);
+
+        $coache = Coache::create($request->validated());
+
+        return createdResponse($coache, 'Coache created successfully');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Coache $coaches)
+    public function show(Coache $coache)
     {
-        return response()->json(['message'=>'coache retrieved successfully','coache'=>$coaches]);
+        $this->authorize('view', $coache);
+
+        return response()->json([
+            'message' => 'coache retrieved successfully',
+            'coache' => $coache
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Coache $coaches)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateCoacheRequest $request, Coache $coache)
     {
+        $this->authorize('update', $coache);
+
         $coache->update($request->validated());
+
         return updatedResponse($coache, 'Coache updated successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Coache $coaches)
+    public function destroy(Coache $coache)
     {
-        $coaches->delete();
-        return deletedResponse( 'Coache deleted successfully');
+        $this->authorize('delete', $coache);
+
+        $coache->delete();
+
+        return deletedResponse('Coache deleted successfully');
     }
 
-    public function sessions(Coache $coaches)
+    public function sessions(Coache $coache)
     {
-        $sessions = $coaches->sessions()->with('player')->get();
-        return response()->json(['message'=>'coache sessions retrieved successfully','sessions'=>$sessions]);
+        $this->authorize('view', $coache);
+
+        $sessions = $coache->sessions()->with('player')->get();
+
+        return response()->json([
+            'message' => 'coache sessions retrieved successfully',
+            'sessions' => $sessions
+        ]);
     }
 
-    public function attendances(Coache $coaches)
+    public function attendances(Coache $coache)
     {
-        $attendances = $coaches->attendances()->with('session.player')->get();
-        return response()->json(['message'=>'coache attendances retrieved successfully','attendances'=>$attendances]);
+        $this->authorize('view', $coache);
+
+        $attendances = $coache->attendances()->with('session.player')->get();
+
+        return response()->json([
+            'message' => 'coache attendances retrieved successfully',
+            'attendances' => $attendances
+        ]);
     }
 
-    public function players(Coache $coaches)
+    public function players(Coache $coache)
     {
-        $players = $coaches->sessions()->with('player')->get()->pluck('player')->unique('id')->values();
-        return response()->json(['message'=>'coache players retrieved successfully','players'=>$players]);
+        $this->authorize('view', $coache);
+
+        $players = $coache->sessions()
+            ->with('player')
+            ->get()
+            ->pluck('player')
+            ->unique('id')
+            ->values();
+
+        return response()->json([
+            'message' => 'coache players retrieved successfully',
+            'players' => $players
+        ]);
     }
-    public function trashed(){
-        $coaches =Coache::onlyTrashed()->get();
+
+    public function trashed()
+    {
+        $this->authorize('viewAny', Coache::class);
+
+        $coaches = Coache::onlyTrashed()->get();
+
         return response()->json($coaches);
     }
-    public function rstore(Coache $coaches){
-        $coaches->restore();
-        return restoredResponse($coaches,'Coache restored successfully', );
+
+    public function restore(Coache $coache)
+    {
+        $this->authorize('restore', $coache);
+
+        $coache->restore();
+
+        return response()->json([
+            'message' => 'Coache restored successfully',
+            'coache' => $coache
+        ]);
     }
 
-    public function forceDelete(Coache $coaches){
-        $coaches->forceDelete();
-        return deletedResponse($coaches, 'Coache permanently deleted');
+    public function forceDelete(Coache $coache)
+    {
+        $this->authorize('forceDelete', $coache);
+
+        $coache->forceDelete();
+
+        return deletedResponse('Coache permanently deleted');
     }
 }

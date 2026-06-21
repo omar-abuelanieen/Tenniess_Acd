@@ -12,15 +12,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->alias([
-            'login.rate.limit' => \App\Http\Middleware\LoginRateLimitMiddleware::class,
 
-        ]);
-        $middleware->alias([
+    $middleware->alias([
+        'login.rate.limit' => \App\Http\Middleware\LoginRateLimitMiddleware::class,
+
         'is.admin' => \App\Http\Middleware\IsAdmin::class,
     ]);
 
-    })
+})
+
+
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

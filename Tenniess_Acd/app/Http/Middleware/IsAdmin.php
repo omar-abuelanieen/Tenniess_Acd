@@ -8,22 +8,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 class IsAdmin
 {
-    public function handle(Request $request, Closure $next): Response
+    public function handle($request, Closure $next)
     {
-        
-        if (! $request->user()) {
-            return response()->json([
-                'message' => 'Unauthenticated.'
-            ], 401);
+        if (!$request->user()) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
         }
 
-        $user = $request->user();
-
-        if ($user->role !== 'admin') {
-
-            return response()->json([
-                'message' => 'Unauthorized.'
-            ], 403);
+        if (!$request->user()->is_admin) {
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         return $next($request);
